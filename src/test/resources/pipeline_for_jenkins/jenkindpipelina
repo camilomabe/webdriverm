@@ -1,0 +1,26 @@
+pipeline {
+  agent any
+  parameters {
+    text(name: 'BRANCH', defaultValue: 'master', description: 'Type the branch you want to operate')
+  }
+
+  stages {
+    stage ("Deploy") {
+	    steps {
+			echo "Master. Branch selected ${params.BRANCH}"
+			git branch: params.BRANCH, url: 'https://github.com/camilomabe/webdriverm.git'
+        }
+      }
+      stage ("Testing") {
+		steps {
+			echo "Run gradle build"
+			bat 'gradle clean'
+			bat 'gradle aggregate'
+			bat 'gradle test'
+			bat 'gradle aggregate'
+        }
+      }
+    }
+}
+
+
